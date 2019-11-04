@@ -1,0 +1,97 @@
+﻿<Window x:Class="CompareDirectories.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CompareDirectories"
+        mc:Ignorable="d"
+        Title="FoldersComparer" MinHeight="300"  MinWidth="792" Width="784.5" Icon="C:\Users\Doss\source\repos\CompareDirectories\CompareDirectories\folder.png" >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*" MinHeight="80"></RowDefinition>
+            <RowDefinition Height="6*" MinHeight="48" ></RowDefinition>
+            <RowDefinition Height="47*" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1"  HorizontalAlignment="Stretch" Background="#7FD1D1D1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" ></ColumnDefinition>
+                <ColumnDefinition Width="*" ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0" Width="Auto">
+                <Button DockPanel.Dock="Right" Command="{Binding BrowseFirstDirectoryCommand}" Name ="BrowseButton1"  Content="Browse" HorizontalAlignment="Stretch"
+                    Margin="2,0,35,0" VerticalAlignment="Top" MinWidth="75" MinHeight="23" MaxHeight="23"/>
+                <TextBox DockPanel.Dock="Right" Text ="{Binding UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Path =FirstDirectoryPath, ValidatesOnExceptions=True}"
+                    Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}"
+                    Name ="BrowseTextBox1" HorizontalAlignment="Stretch" 
+                    MinHeight="23" MaxHeight="23" Margin="75,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" MinWidth="200" Width="Auto" />
+            </DockPanel>
+            <DockPanel Grid.Column="1" HorizontalAlignment="Stretch" LastChildFill="True" Width="Auto">
+                <Button DockPanel.Dock="Right" Command="{Binding BrowseSecondDirectoryCommand}"
+                Name ="BrowseButton2" Content="Browse" HorizontalAlignment="Stretch" Margin="2,0,70,0"
+                VerticalAlignment="Top" MinWidth="75"  MinHeight="23" MaxHeight="23"/>
+                <TextBox Text ="{Binding UpdateSourceTrigger=PropertyChanged, Mode=TwoWay,Path=SecondDirectoryPath,ValidatesOnExceptions=True}"
+                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}" 
+                 Name ="BrowseTextBox2" HorizontalAlignment="Stretch" MinHeight="23" MaxHeight="23" Margin="35,0,0,0" TextWrapping="NoWrap" 
+                 VerticalAlignment="Top" MinWidth="200" Width="Auto"  />
+            </DockPanel>
+
+
+        </Grid>
+        <Border Grid.Row="0" Background="#7FD1D1D1" BorderBrush="#FFD1D1D1"></Border>
+        <Button  x:Name="Compare" Command="{Binding CompareDirectoriesCommand  }"   HorizontalAlignment="Stretch" 
+                 Margin="330,20,330,20"  VerticalAlignment="Stretch" MaxWidth="300" MinWidth="92"   Grid.Row="0" BorderBrush="#FF5F97F7" Background="#FFDDDDDD">
+            <StackPanel Orientation="Horizontal">
+                <Image Height="20" Width="20" Source="C:\Users\Doss\source\repos\CompareDirectories\CompareDirectories\folder.png" Margin="1"/>
+                <TextBlock VerticalAlignment="Center" Text="Compare" Foreground="#FF1273C3" FontSize="18" FontWeight="Bold" />
+            </StackPanel>
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger x:Name="Exceptiontrigers">
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding  ElementName=BrowseTextBox1 , Path=(Validation.HasError)}" Value="False"/>
+                                <Condition Binding="{Binding  ElementName=BrowseTextBox2 , Path=(Validation.HasError)}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="True"/>
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding Text.Length, ElementName=BrowseTextBox1, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Text.Length, ElementName=BrowseTextBox2, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <Border Grid.Row="2" Background="#FFF8FBAC"></Border>
+        <DataGrid Grid.Row="2" AlternatingRowBackground="LightGray" Name ="filesGrid" AutoGenerateColumns="False" ItemsSource="{Binding Files}"
+                  HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top" GridLinesVisibility="Vertical"
+                  VerticalGridLinesBrush="White" FrozenColumnCount="1" BorderBrush="White" IsReadOnly="True" Height="Auto" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" MinWidth="150" MaxWidth="300" />
+                <DataGridTextColumn Header="Size" Binding="{Binding Path=SizeWithSuffix}" MinWidth="90" CanUserSort="True" SortMemberPath="SizeInBytes"/>
+                <DataGridTextColumn Header="Last write date" Binding="{Binding Path=Date}" MinWidth="100" />
+                <DataGridTextColumn Header="Satus" Binding="{Binding Path=Status}"  />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Label  Content="Select folders, please..." BorderThickness="8" Foreground="#FFFF0023" HorizontalAlignment="Stretch"  
+                Margin="75,112,75,114" Grid.Row="2" VerticalAlignment="Center" FontWeight="Light" FontSize="24" FontFamily="Consolas" Height="150"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" >
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled, ElementName=Compare,UpdateSourceTrigger=PropertyChanged}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+    </Grid>
+</Window>
