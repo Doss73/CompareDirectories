@@ -10,24 +10,47 @@ using System.Globalization;
 
 namespace CompareDirectories.ApplicationViewModel
 {
-    public class FileBuilder:IBuilder
+    /// <summary>
+    /// Provides creation file by concrete way 
+    /// </summary>
+    public class FileBuilder:IFileBuilder
     {
+        /// <summary>
+        /// Represent building file
+        /// </summary>
         private FileProduct file;
+        /// <summary>
+        /// Instance of FileInfo for getting information for file
+        /// </summary>
         private FileInfo fileInfo;
+        /// <summary>
+        /// List of created files
+        /// </summary>
         ObservableCollection<FileProduct> files = new ObservableCollection<FileProduct>();
+        /// <summary>
+        /// Represent whether instance of FileProduct is created
+        /// </summary>
         bool isInitialized = false;
+        /// <summary>
+        /// Create instance of FileProduct
+        /// </summary>
+        /// <param name="filePath"></param>
         public void Initialize(string filePath)
         {
             file = new FileProduct(filePath);
             fileInfo = new FileInfo(filePath);
             isInitialized = true;
         }
-
+        /// <summary>
+        /// Getting name of the file
+        /// </summary>
         public void GetName()
         {if(isInitialized)
             file.Name = fileInfo.Name;
         }
-
+        /// <summary>
+        /// Getting size of file in string and bytes formats
+        /// </summary>
         public void GetSize()
         {
             if (isInitialized)
@@ -48,11 +71,19 @@ namespace CompareDirectories.ApplicationViewModel
                     file.SizeWithSuffix = bytes.ToString() + " Bytes";
             }
         }
+        /// <summary>
+        /// Getting date of last editing of dile
+        /// </summary>
         public void GetDate()
         {
             if (isInitialized)
                 file.Date = fileInfo.LastWriteTime.Date.ToShortDateString();
         }
+        /// <summary>
+        /// Dettermines correct status of file
+        /// </summary>
+        /// <param name="firstPath"></param>
+        /// <param name="secondPath"></param>
         public void GetStatus(string firstPath,string secondPath)
         {
             if (isInitialized)
@@ -72,19 +103,26 @@ namespace CompareDirectories.ApplicationViewModel
                 {
                     if (expressions[i])
                     {
-                        file.Status = Statuses.Status[i];
+                        file.Status = Statuses.status[i];
                         break;
                     }
                 }
             }
         }
+        /// <summary>
+        /// Adds file to list
+        /// </summary>
         public void AddFile()
         {
             if (isInitialized)
                 if (files.Where(obj => obj.Name == file.Name).FirstOrDefault() == null)
                     files.Add(file);
         }
-        public ObservableCollection<FileProduct> GetProduct()
+        /// <summary>
+        /// Returns list of files
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<FileProduct> ShowProduct()
         {
             if (isInitialized)
                 return files;

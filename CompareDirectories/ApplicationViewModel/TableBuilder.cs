@@ -8,9 +8,18 @@ using System.Threading.Tasks;
 
 namespace CompareDirectories.ApplicationViewModel
 {
+    /// <summary>
+    /// Provides constructing of files list
+    /// </summary>
     public class TableBuilder
     {
-        public void Construct(IBuilder fileBuilder,string firstPath, string secondPath)
+        /// <summary>
+        /// Provides correct constructing of files list
+        /// </summary>
+        /// <param name="fileBuilder"></param>
+        /// <param name="firstPath"></param>
+        /// <param name="secondPath"></param>
+        public void Construct(IFileBuilder fileBuilder,string firstPath, string secondPath)
         {
             string[] filesFromFirstFolder = new DirectoryReader().GetFiles(firstPath);
             string[] filesFromSecondFolder = new DirectoryReader().GetFiles(secondPath);

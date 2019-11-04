@@ -83,7 +83,7 @@
     <Compile Include="ApplicationViewModel\FileBuilder.cs" />
     <Compile Include="ApplicationViewModel\RelayCommand.cs" />
     <Compile Include="ApplicationViewModel\TableBuilder.cs" />
-    <Compile Include="Interfaces\IBuilder.cs" />
+    <Compile Include="Interfaces\IFileBuilder.cs" />
     <Compile Include="Models\Statuses.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
